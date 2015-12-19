@@ -1,4 +1,4 @@
-module Board (Board, makeEmpty, get, set) where
+module Board (Board, makeEmpty, get, set, getRows) where
 
 {-| Defines a board type and functions to manipulate it.
 
@@ -6,10 +6,11 @@ module Board (Board, makeEmpty, get, set) where
 @docs Board
 
 # Helpers
-@docs makeEmpty, get, set
+@docs makeEmpty, get, set, getRows
 -}
 
 import Array exposing (Array)
+import ListUtil
 
 
 {-| Represents a word search puzzle board.
@@ -65,6 +66,13 @@ set row col char board =
             { board |
                 content = Array.set (index row col board) char board.content
             }
+
+
+{-| Get the board's content as a list of rows.
+-}
+getRows : Board -> List (List Char)
+getRows board =
+    ListUtil.chunk board.width (Array.toList board.content)
 
 
 {-| Given row and column indexes, return a single index into the Board.content
