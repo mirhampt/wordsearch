@@ -1,7 +1,12 @@
--- module PuzzleLogic (Difficulty(Easy, Moderate, Hard), placeWords) where
-module PuzzleLogic (..) where
+module PuzzleLogic (Difficulty(Easy, Moderate, Hard), generate, placeWords, fillInSquares) where
 
 {-| This module handles the main logic of generating a word search puzzle.
+
+# Types
+@docs Difficulty
+
+# Generate Puzzles
+@docs generate, placeWords, fillInSquares
 -}
 
 import Board exposing (Board)
