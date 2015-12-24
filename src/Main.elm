@@ -1,22 +1,85 @@
-module Main where
+module Main (main) where
 
-import String
+import Random
 import Html exposing (..)
-import Html.Attributes exposing (..)
+import Html.Events exposing (onClick)
+import Effects exposing (Effects)
+import StartApp
 import Board exposing (Board)
+import Component.Board
+import PuzzleLogic
 
 
-main : Html
+type alias Model =
+    { board : Board
+    , seed : Random.Seed
+    }
+
+
+type Action
+    = NoOp
+    | GeneratePuzzle
+    | Board Component.Board.Action
+
+
+init : (Model, Effects Action)
+init =
+    let
+        model = { board = Component.Board.init(Board.makeEmpty 8 8)
+                , seed = Random.initialSeed 1
+                }
+    in
+        (model, Effects.none)
+
+
+update : Action -> Model -> (Model, Effects Action)
+update action model =
+    case action of
+        NoOp ->
+            (model, Effects.none)
+
+        GeneratePuzzle ->
+            let
+                words = ["test", "hiya"]
+                emptyBoard = Board.makeEmpty 8 8
+            in
+                case PuzzleLogic.generate model.seed PuzzleLogic.Easy words emptyBoard of
+                    (Ok board, seed) ->
+                        ({ model
+                            | seed = seed
+                            , board = Component.Board.update (Component.Board.UpdateBoard board) model.board
+                            }, Effects.none)
+
+                    (Err _, _) ->
+                        (model, Effects.none)
+
+        Board action ->
+            let
+                model = { model |
+                    board = Component.Board.update action model.board
+                    }
+            in
+                (model, Effects.none)
+
+
+view : Signal.Address Action -> Model -> Html
+view address model =
+    div []
+        [ Component.Board.view (Signal.forwardTo address Board) model.board
+        , button [ onClick address GeneratePuzzle ] [ text "Generate" ]
+        ]
+
+
+app : StartApp.App Model
+app =
+    StartApp.start
+        { init = init
+        , view = view
+        , update = update
+        , inputs = []
+        }
+
+
+main : Signal Html
 main =
-    renderBoard (Board.makeEmpty 3 3)
-
-
-renderBoard : Board -> Html
-renderBoard board =
-    table [ class "board" ]
-        (List.map renderRow (Board.getRows board))
-
-
-renderRow : List Char -> Html
-renderRow row =
-    tr [] (List.map (\c -> td [] [ text (String.fromChar c) ]) row)
+    app.html
