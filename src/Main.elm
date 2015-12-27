@@ -7,12 +7,14 @@ import Effects exposing (Effects)
 import StartApp
 import Board exposing (Board)
 import Component.Board
+import Component.GenerateOptions
 import PuzzleLogic
 
 
 type alias Model =
     { board : Board
     , seed : Random.Seed
+    , options : Component.GenerateOptions.Model
     }
 
 
@@ -20,6 +22,7 @@ type Action
     = NoOp
     | GeneratePuzzle
     | Board Component.Board.Action
+    | GenerateOptions Component.GenerateOptions.Action
 
 
 init : (Model, Effects Action)
@@ -27,6 +30,7 @@ init =
     let
         model = { board = Component.Board.init(Board.makeEmpty 8 8)
                 , seed = Random.initialSeed 1
+                , options = Component.GenerateOptions.init
                 }
     in
         (model, Effects.none)
@@ -43,7 +47,7 @@ update action model =
                 words = ["test", "hiya"]
                 emptyBoard = Board.makeEmpty 8 8
             in
-                case PuzzleLogic.generate model.seed PuzzleLogic.Easy words emptyBoard of
+                case PuzzleLogic.generate model.seed model.options.difficulty words emptyBoard of
                     (Ok board, seed) ->
                         ({ model
                             | seed = seed
@@ -61,11 +65,22 @@ update action model =
             in
                 (model, Effects.none)
 
+        GenerateOptions action ->
+            let
+                model = { model |
+                    options = Component.GenerateOptions.update action model.options
+                    }
+            in
+                (model, Effects.none)
+
 
 view : Signal.Address Action -> Model -> Html
 view address model =
     div []
         [ Component.Board.view (Signal.forwardTo address Board) model.board
+        , Component.GenerateOptions.view
+            (Signal.forwardTo address GenerateOptions)
+            model.options
         , button [ onClick address GeneratePuzzle ] [ text "Generate" ]
         ]
 
