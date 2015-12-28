@@ -44,9 +44,13 @@ update action model =
 
         GeneratePuzzle ->
             let
-                emptyBoard = Board.makeEmpty model.options.width model.options.height
+                width = Component.GenerateOptions.getWidth model.options
+                height = Component.GenerateOptions.getHeight model.options
+                difficulty = Component.GenerateOptions.getDifficulty model.options
+                words = Component.GenerateOptions.getWords model.options
+                emptyBoard = Board.makeEmpty width height
             in
-                case PuzzleLogic.generate model.seed model.options.difficulty model.options.words emptyBoard of
+                case PuzzleLogic.generate model.seed difficulty words emptyBoard of
                     (Ok board, seed) ->
                         ({ model
                             | seed = seed

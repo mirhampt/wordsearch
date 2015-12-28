@@ -1,10 +1,20 @@
-module Component.GenerateOptions (Action, Model, init, update, view) where
+module Component.GenerateOptions
+    ( Action, Model
+    , getWidth, getHeight, getWords, getDifficulty
+    , init, update, view
+    ) where
 
 {-| Component to display options for generating a puzzle. Uses the "elm
 architecture."
 
 # Types
 @docs Action, Model
+
+# "Getters"
+
+Use these instead of directly accessing the fields of the Model.
+
+@docs getWidth, getHeight, getDifficulty, getWords
 
 # Standard Functions
 @docs init, update, view
@@ -47,6 +57,28 @@ init =
     , height = 8
     , words = []
     }
+
+
+-- "Getters"
+
+getWidth : Model -> Int
+getWidth model =
+    model.width
+
+
+getHeight : Model -> Int
+getHeight model =
+    model.height
+
+
+getWords : Model -> List String
+getWords model =
+    model.words
+
+
+getDifficulty : Model -> Difficulty
+getDifficulty model =
+    model.difficulty
 
 
 {-| Update the state of the component with the given action.
