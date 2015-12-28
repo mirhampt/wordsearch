@@ -135,4 +135,4 @@ testGenerateSuccess =
         (board, _) = PuzzleLogic.generate initialSeed PuzzleLogic.Easy words emptyBoard
     in
         test "generate successfully creates a full puzzle"
-            (assertEqual board (Ok expectedGeneratedBoard))
+            (assertEqual board (Ok (expectedGeneratedBoard, expectedBoard)))

@@ -48,18 +48,22 @@ type Direction
 into account, then filling in the remaining blanks with random characters.
 
 The board passed to this function should be blank.
+
+Two boards will be returned on success. The first is the completed board with
+random characters filling in the blanks squares. The second is the board
+without the blanks squares filled in.
 -}
-generate : Seed -> Difficulty -> List String -> Board -> (Result String Board, Seed)
+generate : Seed -> Difficulty -> List String -> Board -> (Result String (Board, Board), Seed)
 generate seed difficulty words board =
     case placeWords seed difficulty words board of
         (Ok newBoard, newSeed) ->
             let
                 (filledBoard, newSeed) = fillInSquares newSeed newBoard
             in
-                (Ok filledBoard, newSeed)
+                (Ok (filledBoard, newBoard), newSeed)
 
-        otherwise ->
-            otherwise
+        (Err msg, newSeed) ->
+            (Err msg, newSeed)
 
 
 {-| Randomly places the words onto the board.

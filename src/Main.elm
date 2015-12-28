@@ -13,7 +13,7 @@ import PuzzleLogic
 
 
 type alias Model =
-    { board : Board
+    { board : Component.Board.Model
     , seed : Random.Seed
     , options : Component.GenerateOptions.Model
     }
@@ -52,10 +52,10 @@ update action model =
                 emptyBoard = Board.makeEmpty width height
             in
                 case PuzzleLogic.generate model.seed difficulty words emptyBoard of
-                    (Ok board, seed) ->
+                    (Ok (board, justWordsBoard), seed) ->
                         ({ model
                             | seed = seed
-                            , board = Component.Board.update (Component.Board.UpdateBoard board) model.board
+                            , board = Component.Board.update (Component.Board.UpdateBoard board justWordsBoard) model.board
                             }, Effects.none)
 
                     (Err _, _) ->
