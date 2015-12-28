@@ -45,7 +45,7 @@ update action model =
         GeneratePuzzle ->
             let
                 words = ["test", "hiya"]
-                emptyBoard = Board.makeEmpty 8 8
+                emptyBoard = Board.makeEmpty model.options.width model.options.height
             in
                 case PuzzleLogic.generate model.seed model.options.difficulty words emptyBoard of
                     (Ok board, seed) ->
