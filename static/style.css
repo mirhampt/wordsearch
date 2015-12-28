@@ -1,0 +1,40 @@
+body {
+  font-family: 14px Georgia,Times,"Times New Roman",serif;
+}
+
+textarea {
+  font-size: 14px;
+}
+
+#controls {
+  width: 232px;
+  border: 1px solid #FFEB3B;
+  border-radius: 5px;
+  background-color: #FDF8CD;
+  padding: 15px;
+  float: left;
+  margin-right: 20px;
+}
+
+#controls button {
+  margin-top: 15px;
+}
+
+.controls label span, .controls label textarea {
+  display: block;
+}
+
+.controls label {
+  display: block;
+}
+
+.controls .size,
+.controls .words {
+  margin-top: 6px;
+}
+
+.controls .words textarea {
+  width: 100%;
+  height: 100px;
+  box-sizing: border-box;
+}

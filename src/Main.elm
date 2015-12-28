@@ -2,6 +2,7 @@ module Main (main) where
 
 import Random
 import Html exposing (..)
+import Html.Attributes exposing (id)
 import Html.Events exposing (onClick)
 import Effects exposing (Effects)
 import StartApp
@@ -80,11 +81,13 @@ update action model =
 view : Signal.Address Action -> Model -> Html
 view address model =
     div []
-        [ Component.Board.view (Signal.forwardTo address Board) model.board
-        , Component.GenerateOptions.view
-            (Signal.forwardTo address GenerateOptions)
-            model.options
-        , button [ onClick address GeneratePuzzle ] [ text "Generate" ]
+        [ div [ id "controls" ]
+            [ Component.GenerateOptions.view
+                (Signal.forwardTo address GenerateOptions)
+                model.options
+            , button [ onClick address GeneratePuzzle ] [ text "Generate" ]
+            ]
+        , Component.Board.view (Signal.forwardTo address Board) model.board
         ]
 
 

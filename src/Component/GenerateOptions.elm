@@ -107,8 +107,6 @@ update action model =
 -}
 view : Signal.Address Action -> Model -> Html
 view address model =
-    -- size
-    -- words?
     div [ class "controls" ]
         [ div [ class "difficulty" ]
             [ difficultyRadio address "Easy" Easy (model.difficulty == Easy)
