@@ -10,6 +10,7 @@ architecture."
 @docs init, update, view
 -}
 
+import Regex
 import String
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -22,7 +23,9 @@ import PuzzleLogic exposing (Difficulty(Easy, Moderate, Hard))
 type alias Model =
     { difficulty : Difficulty
     , width : Int
-    , height : Int }
+    , height : Int
+    , words : List String
+    }
 
 
 {-| Possible actions for the form. These likely won't need to be used directly
@@ -32,6 +35,7 @@ type Action
     = UpdateDifficulty Difficulty
     | UpdateWidth Int
     | UpdateHeight Int
+    | UpdateWords String
 
 
 {-| Initialize the form's model with some sensible defaults.
@@ -41,6 +45,7 @@ init =
     { difficulty = Easy
     , width = 8
     , height = 8
+    , words = []
     }
 
 
@@ -57,6 +62,13 @@ update action model =
 
         UpdateHeight height ->
             { model | height = height }
+
+        UpdateWords wordsString ->
+            -- Strip out non-alphabetic characters and make them all lowercase.
+            let replaceNonAlpha = Regex.replace Regex.All (Regex.regex "[^a-z\\s]") (\_ -> " ")
+                cleanAndSplit = String.words << replaceNonAlpha << String.toLower
+            in
+                { model | words = cleanAndSplit wordsString }
 
 
 {-| Render the form.
@@ -77,6 +89,12 @@ view address model =
                 , text "x"
                 , sizeSelect address UpdateHeight [6..16] model.height
                 ])
+            ]
+        , div [ class "words" ]
+            [ control "Words" (textarea
+                [ placeholder "Enter words here separated by spaces or new lines."
+                , on "input" targetValue (Signal.message address << UpdateWords)
+                ] [])
             ]
         ]
 
